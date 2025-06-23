@@ -1,0 +1,57 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  background: var(--navbar-bg);
+  color: var(--navbar-text);
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.left {
+  display: flex;
+  gap: 2rem;
+}
+.navbar a {
+  color: var(--navbar-text);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.navbar a:hover {
+  background: var(--navbar-hover-bg);
+  color: var(--navbar-hover-text);
+}
+.active {
+  background: var(--navbar-active-bg);
+  color: var(--navbar-active-text);
+}
+.themeToggle {
+  background: none;
+  border: none;
+  color: var(--navbar-text);
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 0.3rem 0.7rem;
+  transition: background 0.2s;
+}
+.themeToggle:hover {
+  background: var(--navbar-hover-bg);
+}
+:root {
+  --navbar-bg: #111;
+  --navbar-text: #fff;
+  --navbar-hover-bg: #222;
+  --navbar-hover-text: #fff;
+  --navbar-active-bg: #222;
+  --navbar-active-text: #fff;
+} 

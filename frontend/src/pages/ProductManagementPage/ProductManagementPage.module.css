@@ -1,0 +1,205 @@
+/* ProductsPage.module.css */
+.fullscreen {
+  min-height: 100vh;
+  background: #111;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar {
+  display: flex;
+  gap: 2rem;
+  background: #181a20;
+  color: #f3f4f6;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar button {
+  background: none;
+  border: none;
+  color: #f3f4f6;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.navbar button:hover {
+  background: #232323;
+}
+
+.container {
+  flex: 1;
+  max-width: 1100px;
+  margin: 2rem auto;
+  background: #1e2128;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  padding: 2.5rem 2rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #f3f4f6;
+}
+
+.addButton {
+  background: #222;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  align-self: flex-end;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+}
+.addButton:hover {
+  background: #333;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #181a20;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+.table th, .table td {
+  padding: 1rem 0.7rem;
+  text-align: left;
+}
+.table th {
+  background: #232323;
+  color: #f3f4f6;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.table tr {
+  border-bottom: 1px solid #232323;
+}
+.table tr:last-child {
+  border-bottom: none;
+}
+.table tr:hover {
+  background: #232323;
+}
+.editButton {
+  background: #e5e5e5;
+  color: #232323;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.editButton:hover {
+  background: #bdbdbd;
+}
+.deleteButton {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.deleteButton:hover {
+  background: #b91c1c;
+}
+
+/* Modal styles */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30, 41, 59, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+.modal {
+  background: #232323;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.33);
+  padding: 2rem 2.5rem;
+  min-width: 340px;
+  max-width: 95vw;
+}
+.form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #f3f4f6;
+}
+.form input, .form select {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #35394a;
+  background: #181a20;
+  color: #f3f4f6;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+}
+.form input:focus, .form select:focus {
+  outline: 2px solid #444;
+  border-color: #444;
+}
+.formActions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.formActions button {
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.formActions button[type='submit'] {
+  background: #222;
+  color: #fff;
+}
+.formActions button[type='submit']:hover {
+  background: #333;
+}
+.formActions button[type='button'] {
+  background: #35394a;
+  color: #f3f4f6;
+}
+.formActions button[type='button']:hover {
+  background: #232323;
+}
+
+.thumb {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #181a20;
+  border: 1px solid #35394a;
+}

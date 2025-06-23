@@ -1,0 +1,60 @@
+.cartPage {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #181a20;
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  padding: 2rem;
+}
+.cartPage h2 {
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+.cartList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+.cartItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid #232323;
+}
+.cartItem:last-child {
+  border-bottom: none;
+}
+.cartActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+.cartTotal {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.cartPage button {
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.cartPage button:hover {
+  background: #333;
+}
+.error {
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+.popup-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(24,26,32,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.popup { background: #232323; color: #fff; padding: 2rem 2.5rem; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.45); text-align: center; border: 1px solid #333; }
+.popup button { background: #222; color: #fff; border: none; border-radius: 6px; padding: 0.5rem 1.2rem; margin-top: 1.2rem; cursor: pointer; font-weight: 600; transition: background 0.2s; }
+.popup button:hover { background: #333; } 

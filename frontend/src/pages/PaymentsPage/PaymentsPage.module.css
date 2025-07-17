@@ -1,4 +1,4 @@
-/* OrdersPage.module.css */
+/* PaymentsPage.module.css */
 .fullscreen {
   min-height: 100vh;
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
@@ -48,10 +48,17 @@
   box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
 }
 
-.addButton:hover {
+.addButton:hover:not(:disabled) {
   background: linear-gradient(45deg, #059669, #047857);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.addButton:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Loading State */
@@ -95,7 +102,24 @@
   color: #ef4444;
   font-size: 1.2rem;
   font-weight: 600;
-  margin: 0;
+  margin: 0 0 1rem 0;
+}
+
+.retryBtn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retryBtn:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
 }
 
 /* Empty State */
@@ -122,14 +146,14 @@
   font-size: 1.1rem;
 }
 
-/* Orders Grid */
-.ordersGrid {
+/* Payments Grid */
+.paymentsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
   gap: 2rem;
 }
 
-.orderCard {
+.paymentCard {
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   border-radius: 16px;
   padding: 1.5rem;
@@ -138,13 +162,13 @@
   transition: all 0.3s ease;
 }
 
-.orderCard:hover {
+.paymentCard:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   border-color: #64748b;
 }
 
-.orderHeader {
+.paymentHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -153,19 +177,19 @@
   border-bottom: 1px solid #475569;
 }
 
-.orderId {
+.paymentId {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.orderLabel {
+.paymentLabel {
   font-size: 0.8rem;
   color: #94a3b8;
   font-weight: 500;
 }
 
-.orderValue {
+.paymentValue {
   font-family: monospace;
   font-size: 1rem;
   font-weight: 700;
@@ -184,24 +208,68 @@
   text-transform: capitalize;
 }
 
-.orderDate {
+.paymentDate {
   color: #94a3b8;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
 
-.orderProducts {
+.paymentMethod {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.methodIcon {
+  font-size: 1.5rem;
+}
+
+.methodName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.paymentAmount {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(251, 191, 36, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.amountLabel {
+  font-size: 1rem;
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+.amountValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fbbf24;
+}
+
+.orderInfo {
   margin-bottom: 1.5rem;
 }
 
-.orderProducts h4 {
+.orderInfo h4 {
   margin: 0 0 1rem 0;
   color: #f1f5f9;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
-.productsList {
+.orderProducts {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -249,47 +317,33 @@
   font-size: 0.9rem;
 }
 
-.orderTotal {
+.transactionId {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 0;
-  border-top: 1px solid #475569;
+  flex-direction: column;
+  gap: 0.5rem;
   margin-bottom: 1.5rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.totalAmount {
-  color: #fbbf24;
-  font-size: 1.3rem;
-}
-
-.orderActions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.editButton {
-  background: linear-gradient(45deg, #3b82f6, #1d4ed8);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1rem;
+  padding: 1rem;
+  background: rgba(59, 130, 246, 0.1);
   border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.transactionLabel {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.transactionValue {
+  font-family: monospace;
   font-size: 0.9rem;
   font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  color: #3b82f6;
 }
 
-.editButton:hover {
-  background: linear-gradient(45deg, #1d4ed8, #1e40af);
-  transform: translateY(-2px);
+.paymentActions {
+  display: flex;
+  gap: 0.75rem;
 }
 
 .deleteButton {
@@ -379,15 +433,8 @@
   font-size: 1rem;
 }
 
-.productRow {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  margin-bottom: 0.5rem;
-}
-
-.productSelect {
-  flex: 1;
+.orderSelect,
+.paymentMethodSelect {
   padding: 0.75rem;
   border: 1px solid #475569;
   background: #1e293b;
@@ -396,13 +443,13 @@
   font-size: 0.9rem;
 }
 
-.productSelect:focus {
+.orderSelect:focus,
+.paymentMethodSelect:focus {
   outline: 2px solid #3b82f6;
   border-color: #3b82f6;
 }
 
-.quantityInput {
-  width: 80px;
+.amountInput {
   padding: 0.75rem;
   border: 1px solid #475569;
   background: #1e293b;
@@ -412,54 +459,18 @@
   text-align: center;
 }
 
-.quantityInput:focus {
+.amountInput:focus {
   outline: 2px solid #3b82f6;
   border-color: #3b82f6;
 }
 
-.removeProductBtn {
-  background: #ef4444;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.customerFields {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.removeProductBtn:hover {
-  background: #dc2626;
-  transform: scale(1.1);
-}
-
-.addProductBtn {
-  background: linear-gradient(45deg, #10b981, #059669);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.addProductBtn:hover {
-  background: linear-gradient(45deg, #059669, #047857);
-  transform: translateY(-2px);
-}
-
-.statusSelect {
+.customerInput {
   padding: 0.75rem;
   border: 1px solid #475569;
   background: #1e293b;
@@ -468,9 +479,13 @@
   font-size: 0.9rem;
 }
 
-.statusSelect:focus {
+.customerInput:focus {
   outline: 2px solid #3b82f6;
   border-color: #3b82f6;
+}
+
+.customerInput::placeholder {
+  color: #64748b;
 }
 
 .formActions {
@@ -540,22 +555,22 @@
     font-size: 2rem;
   }
   
-  .ordersGrid {
+  .paymentsGrid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }
   
-  .orderCard {
+  .paymentCard {
     padding: 1rem;
   }
   
-  .orderHeader {
+  .paymentHeader {
     flex-direction: column;
     gap: 0.5rem;
     align-items: flex-start;
   }
   
-  .orderActions {
+  .paymentActions {
     flex-direction: column;
   }
   
@@ -565,17 +580,11 @@
     margin: 1rem;
   }
   
-  .productRow {
-    flex-direction: column;
+  .customerFields {
     gap: 0.5rem;
-  }
-  
-  .productSelect,
-  .quantityInput {
-    width: 100%;
   }
   
   .formActions {
     flex-direction: column;
   }
-}
+} 

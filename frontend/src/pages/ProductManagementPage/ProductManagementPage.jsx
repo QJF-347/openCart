@@ -57,28 +57,53 @@ const ProductsPage = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
-    await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-    fetchProducts();
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ message: 'Unknown error' }));
+        throw new Error(`Failed to delete product: ${res.status} - ${errorData.message}`);
+      }
+      await fetchProducts();
+    } catch (err) {
+      console.error('Delete error:', err);
+      setError(err.message);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const method = editingId ? 'PUT' : 'POST';
-    const url = editingId ? `${API_URL}/${editingId}` : API_URL;
-    await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    try {
+      const method = editingId ? 'PUT' : 'POST';
+      const url = editingId ? `${API_URL}/${editingId}` : API_URL;
+      
+      const requestBody = {
         name: form.name,
         description: form.description,
         price: parseFloat(form.price),
         stock: parseInt(form.stock, 10),
         image: form.image,
-      }),
-    });
-    setShowForm(false);
-    setEditingId(null);
-    fetchProducts();
+      };
+      
+      console.log('Sending request:', { method, url, body: requestBody });
+      
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ message: 'Unknown error' }));
+        throw new Error(`Failed to ${editingId ? 'update' : 'create'} product: ${res.status} - ${errorData.message}`);
+      }
+      
+      setShowForm(false);
+      setEditingId(null);
+      await fetchProducts();
+    } catch (err) {
+      console.error('Submit error:', err);
+      setError(err.message);
+    }
   };
 
   return (

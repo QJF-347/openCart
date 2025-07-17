@@ -1,18 +1,35 @@
-const mongoose = require('mongoose');
+const { MongoClient } = require('mongodb');
+
+let db = null;
 
 const connectDB = async (uri) => {
-  if (mongoose.connection.readyState === 1) {
-    return;
+  if (db) {
+    return db;
   }
-  await mongoose.connect(uri, {
+  
+  const client = new MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
+  
+  await client.connect();
+  db = client.db();
+  console.log('Connected to MongoDB');
+  return db;
+};
+
+const getDB = () => {
+  if (!db) {
+    throw new Error('Database not connected. Call connectDB first.');
+  }
+  return db;
 };
 
 const closeDB = async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
+  if (db) {
+    await db.client.close();
+    db = null;
+  }
 };
 
-module.exports = { connectDB, closeDB };
+module.exports = { connectDB, getDB, closeDB };

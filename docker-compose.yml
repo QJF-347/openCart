@@ -50,6 +50,7 @@ services:
         depends_on:
             - product-service
             - order-service
+            - payment-service
 
 volumes:
   mongo-data:

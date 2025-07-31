@@ -65,49 +65,39 @@ app.get('/orders', async (req, res) => {
 });
 
 // POST /orders - Create a new order
+// Add this new endpoint to your server.js file
 app.post('/orders', async (req, res) => {
   try {
-    const { products, customerInfo } = req.body;
-    
-    if (!products || !Array.isArray(products) || products.length === 0) {
-      return res.status(400).json({ message: 'Products array is required and must not be empty' });
-    }
-    
     const database = getDB();
-    
-    // Validate that all products exist
-    const productIds = products.map(p => p.id || p.productId);
-    const existingProducts = await database.collection('products').find({
-      _id: { $in: productIds.map(id => new ObjectId(id)) }
-    }).toArray();
-    
-    if (existingProducts.length !== productIds.length) {
-      return res.status(400).json({ message: 'One or more products not found' });
+    const { products, totalAmount, customerInfo, status } = req.body;
+
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      return res.status(400).json({ message: 'Products array is required and must not be empty.' });
     }
-    
-    const order = {
-      products: products.map(product => ({
-        productId: product.id || product.productId,
-        quantity: parseInt(product.quantity || product.qty) || 1,
-        price: parseFloat(product.price) || 0
+    if (typeof totalAmount === 'undefined' || isNaN(totalAmount)) {
+        return res.status(400).json({ message: 'totalAmount is required and must be a number.' });
+    }
+
+    const newOrder = {
+      products: products.map(p => ({
+        productId: new ObjectId(p.productId), // Ensure productId is stored as ObjectId
+        quantity: p.quantity,
+        price: p.price
       })),
+      totalAmount: parseFloat(totalAmount),
       customerInfo: customerInfo || {},
-      status: 'pending',
-      totalAmount: products.reduce((sum, product) => {
-        return sum + (parseFloat(product.price) * (parseInt(product.quantity || product.qty) || 1));
-      }, 0),
+      status: status || 'pending', // Default to 'pending'
       createdAt: new Date(),
       updatedAt: new Date()
     };
-    
-    const result = await database.collection('orders').insertOne(order);
-    const savedOrder = await database.collection('orders').findOne({ _id: result.insertedId });
-    
-    console.log('Order created successfully:', savedOrder._id);
-    res.status(201).json(savedOrder);
+
+    const result = await database.collection('orders').insertOne(newOrder);
+    // Return the _id of the newly created order
+    res.status(201).json({ message: 'Order created successfully', _id: result.insertedId });
+
   } catch (error) {
     console.error('Error creating order:', error);
-    res.status(400).json({ message: 'Error creating order', error: error.message });
+    res.status(500).json({ message: 'Failed to create order', error: error.message });
   }
 });
 

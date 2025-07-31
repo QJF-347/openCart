@@ -8,7 +8,7 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
-        {/* <NavLink to="/" className={({isActive}) => isActive ? styles.active : ''}>Dashboard</NavLink> */}
+        <NavLink to="/" className={({isActive}) => isActive ? styles.active : ''}>Dashboard</NavLink>
         <NavLink to="/products" className={({isActive}) => isActive ? styles.active : ''}>Shop</NavLink>
         <NavLink to="/manage-products" className={({isActive}) => isActive ? styles.active : ''}>Manage Products</NavLink>
         <NavLink to="/orders" className={({isActive}) => isActive ? styles.active : ''}>Orders</NavLink>

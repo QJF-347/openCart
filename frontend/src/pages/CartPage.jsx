@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import { useCart } from '../components/CartContext';
 import './CartPage.css';
+// Removed: import { initiateSTKPush } from './mpesaStkTest.cjs';
+// The M-Pesa logic is now handled by your backend.
+import axios from 'axios'; // Import axios for making HTTP requests to your backend
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
   const [showPopup, setShowPopup] = useState(false);
+  const [showMpesaPopup, setShowMpesaPopup] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [mpesaLoading, setMpesaLoading] = useState(false);
   const [error, setError] = useState('');
+  const [mpesaError, setMpesaError] = useState('');
   const [orderId, setOrderId] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState(''); // State for M-Pesa phone number
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const tax = subtotal * 0.1;
-  const total = subtotal + tax;
+  const total = subtotal + tax; // Total amount to be paid
 
   const handleQuantityChange = (itemId, newQty) => {
     if (newQty < 1) {
@@ -23,46 +30,46 @@ export default function CartPage() {
   const handleCheckout = async () => {
     setLoading(true);
     setError('');
-    
-    // Transform cart data to match backend expectations
-    // Include tax in the product prices to match the total
+
+    // Transform cart items to match your order schema (assuming product ID and quantity)
     const transformedCart = cart.map(item => ({
-      id: item.id,
+      productId: item.id, // Assuming 'id' from cart item maps to 'productId' in your order schema
       quantity: item.qty,
-      price: (item.price * 1.1) // Include tax in the price
+      price: item.price // Send original price; backend will validate against order total
     }));
-    
-    const orderData = { 
+
+    const orderData = {
       products: transformedCart,
+      totalAmount: total, // Send the calculated total amount
       customerInfo: {
-        email: 'customer@example.com',
-        name: 'John Doe'
+        email: 'customer@example.com', // Replace with actual customer email
+        name: 'John Doe' // Replace with actual customer name
       }
     };
-    
-    console.log('Sending order data:', orderData);
-    
+
     try {
-      const res = await fetch('http://localhost:3001/orders', {
+      // Call your backend's orders endpoint to create the order
+      const res = await fetch('http://localhost:3001/orders', { // Ensure this matches your backend's orders endpoint URL and port
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
         body: JSON.stringify(orderData),
       });
-      
+
       if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(`Server error: ${res.status} - ${errorText}`);
+        const errorData = await res.json(); // Assuming backend sends JSON error
+        throw new Error(errorData.message || `Server error: ${res.status}`);
       }
-      
+
       const result = await res.json();
       console.log('Order created successfully:', result);
-      console.log('Setting orderId to:', result._id);
-      setOrderId(result._id);
-      clearCart();
-      setShowPopup(true);
+      if (!result._id) {
+        throw new Error('Order creation failed: No order ID returned');
+      }
+      // setOrderId(result.payment.orderId); // Assuming your /payments endpoint returns the orderId in result.payment.orderId
+      setShowPopup(true); // Show order placed successfully popup
     } catch (err) {
       console.error('Checkout error:', err);
       setError(err.message || 'Checkout failed');
@@ -71,60 +78,63 @@ export default function CartPage() {
     }
   };
 
-  const closePopup = () => setShowPopup(false);
+  const closePopup = () => {
+    setShowPopup(false);
+    setShowMpesaPopup(false);
+  };
 
-  const handlePayment = async () => {
-    if (!orderId) {
-      console.error('No orderId available');
-      alert('No order ID available. Please try checking out again.');
+  const handleMpesaPayment = async () => {
+    if (!phoneNumber) {
+      setMpesaError('Please enter your M-Pesa phone number');
       return;
     }
-    
+
+    // Validate M-Pesa phone number format (starts with 254, followed by 9 digits)
+    if (!/^254[17]\d{8}$/.test(phoneNumber)) { // Updated regex for 2547XXXXXXXX or 2541XXXXXXXX
+      setMpesaError('Invalid M-Pesa number format. Must start with 254 followed by 9 digits (e.g., 254712345678)');
+      return;
+    }
+
+    // if (!orderId) {
+    //   console.error('No orderId available for M-Pesa payment');
+    //   setMpesaError('No order ID available. Please try checking out again.');
+    //   return;
+    // }
+
+    setMpesaLoading(true);
+    setMpesaError('');
+
     try {
-      const paymentData = {
-        orderId: orderId,
-        paymentMethod: 'credit_card',
-        amount: total, // Use the total with tax
-        customerInfo: {
-          email: 'customer@example.com',
-          name: 'John Doe'
-        }
-      };
-
-      console.log('Sending payment data:', paymentData);
-      console.log('orderId type:', typeof orderId, 'value:', orderId);
-      console.log('amount type:', typeof total, 'value:', total);
-      console.log('JSON stringified:', JSON.stringify(paymentData));
-
-      const requestBody = JSON.stringify(paymentData);
-      console.log('Request body length:', requestBody.length);
-      console.log('Request body:', requestBody);
-
-      const res = await fetch('http://localhost:3002/payments', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: requestBody,
+      // Call your backend's M-Pesa STK Push endpoint
+      const response = await axios.post('http://localhost:3002/api/mpesa/stkpush', { // Ensure this matches your backend's M-Pesa endpoint URL and port
+        // orderId: orderId,
+        amount: total, // Send the total amount to the backend
+        phoneNumber: phoneNumber,
+        // customerInfo: { // Optional: send additional customer info
+        //   email: 'customer@example.com',
+        //   name: 'John Doe'
+        // }
       });
 
-      console.log('Response status:', res.status);
-      console.log('Response headers:', res.headers);
+      console.log('M-Pesa payment initiated by backend:', response.data);
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error('Payment response error:', res.status, errorText);
-        throw new Error(`Payment failed: ${res.status} - ${errorText}`);
+      // Check M-Pesa response for success
+      if (response.data && response.data.ResponseCode === '0') {
+        alert('M-Pesa payment request sent! Please check your phone to complete the payment.');
+        clearCart(); // Clear cart on successful initiation
+        closePopup(); // Close all popups
+      } else {
+        // Handle M-Pesa specific errors returned from your backend
+        setMpesaError(response.data.ResponseDescription || 'Failed to initiate M-Pesa payment. Please try again.');
+        console.error('M-Pesa API returned an error:', response.data);
       }
 
-      const result = await res.json();
-      console.log('Payment successful:', result);
-      alert('Payment processed successfully!');
-      closePopup();
     } catch (err) {
-      console.error('Payment error:', err);
-      alert('Payment failed: ' + err.message);
+      console.error('M-Pesa payment error (frontend):', err);
+      // Display error message from backend if available, otherwise a generic one
+      setMpesaError(err.response?.data?.message || err.message || 'Failed to initiate M-Pesa payment. Network error or server issue.');
+    } finally {
+      setMpesaLoading(false);
     }
   };
 
@@ -143,11 +153,52 @@ export default function CartPage() {
             <p>Your order has been created and saved to the database.</p>
             <p className="orderId">Order ID: {orderId}</p>
             <div className="popupActions">
-              <button onClick={handlePayment} className="paymentBtn">
-                💳 Process Payment
+              <button
+                onClick={() => {
+                  setShowPopup(false);
+                  setShowMpesaPopup(true);
+                }}
+                className="paymentBtn mpesaBtn"
+              >
+                📱 Pay with M-Pesa
               </button>
               <button onClick={closePopup} className="closeBtn">
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showMpesaPopup && (
+        <div className="popup-overlay">
+          <div className="popup">
+            <div className="popupIcon">📱</div>
+            <h3>M-Pesa Payment</h3>
+            <p>Enter your M-Pesa phone number to receive payment request</p>
+
+            <div className="mpesaForm">
+              <input
+                type="tel"
+                placeholder="254712345678"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="mpesaInput"
+              />
+              {mpesaError && <p className="error">{mpesaError}</p>}
+              <p className="mpesaNote">Format: 254 followed by your phone number (e.g., 254712345678)</p>
+            </div>
+
+            <div className="popupActions">
+              <button
+                onClick={handleMpesaPayment}
+                className="paymentBtn"
+                disabled={mpesaLoading}
+              >
+                {mpesaLoading ? 'Processing...' : 'Send Payment Request'}
+              </button>
+              <button onClick={closePopup} className="closeBtn">
+                Cancel
               </button>
             </div>
           </div>
@@ -183,14 +234,14 @@ export default function CartPage() {
                   <p className="itemPrice">${item.price.toFixed(2)} each</p>
                 </div>
                 <div className="itemQuantity">
-                  <button 
+                  <button
                     onClick={() => handleQuantityChange(item.id, item.qty - 1)}
                     className="qtyBtn"
                   >
                     -
                   </button>
                   <span className="qtyValue">{item.qty}</span>
-                  <button 
+                  <button
                     onClick={() => handleQuantityChange(item.id, item.qty + 1)}
                     className="qtyBtn"
                   >
@@ -200,8 +251,8 @@ export default function CartPage() {
                 <div className="itemTotal">
                   ${(item.price * item.qty).toFixed(2)}
                 </div>
-                <button 
-                  onClick={() => removeFromCart(item.id)} 
+                <button
+                  onClick={() => removeFromCart(item.id)}
                   className="removeBtn"
                 >
                   🗑️
@@ -230,11 +281,11 @@ export default function CartPage() {
               🗑️ Clear Cart
             </button>
             <button className="checkoutBtn" onClick={handleCheckout}>
-              �� Checkout (${(total).toFixed(2)})
+              Checkout (${(total).toFixed(2)})
             </button>
           </div>
         </>
       )}
     </div>
   );
-} 
+}

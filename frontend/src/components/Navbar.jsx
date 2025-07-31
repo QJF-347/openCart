@@ -8,11 +8,11 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
-        <NavLink to="/" className={({isActive}) => isActive ? styles.active : ''}>Dashboard</NavLink>
+        {/* <NavLink to="/" className={({isActive}) => isActive ? styles.active : ''}>Dashboard</NavLink> */}
         <NavLink to="/products" className={({isActive}) => isActive ? styles.active : ''}>Shop</NavLink>
         <NavLink to="/manage-products" className={({isActive}) => isActive ? styles.active : ''}>Manage Products</NavLink>
         <NavLink to="/orders" className={({isActive}) => isActive ? styles.active : ''}>Orders</NavLink>
-        <NavLink to="/payments" className={({isActive}) => isActive ? styles.active : ''}>Payments</NavLink>
+        {/* <NavLink to="/payments" className={({isActive}) => isActive ? styles.active : ''}>Payments</NavLink> */}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <NavLink to="/cart" className={({isActive}) => isActive ? styles.active : ''} style={{ position: 'relative', fontSize: '1.5rem', textDecoration: 'none' }}>

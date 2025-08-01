@@ -5,17 +5,18 @@ import ProductManagementPage from './pages/ProductManagementPage/ProductManageme
 import OrdersPage from './pages/OrdersPage/OrdersPage.jsx';
 import ProductsPage from './pages/ProductsPage/ProductsPage.jsx';
 import CartPage from './pages/CartPage.jsx';
-import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import Navbar from './components/Navbar.jsx';
+import AuthPage from './pages/Login/Login.jsx';
 import { CartProvider } from './components/CartContext';
 import './App.css';
 
 function App() {
   return (
     <Router>
+      
       <Navbar />
       <Routes>
-        {/* <Route path="/" element={<Dashboard />} /> */}
+        <Route path="/" element={<AuthPage />} />
         <Route path="/products" element={<ProductsPage />} />
         <Route path="/manage-products" element={<ProductManagementPage />} />
         <Route path="/orders" element={<OrdersPage />} />

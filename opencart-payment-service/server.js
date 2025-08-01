@@ -14,10 +14,11 @@ app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:3000', // Your frontend URL from .env or default
     'http://localhost:5173',
-    'http://127.0.0.1:5173'
+    'http://127.0.0.1:5173', 
+    'http://127.0.0.1:5173/cart'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  allowedHeaders: ['*'],
   credentials: true
 }));
 
@@ -60,7 +61,7 @@ const mpesaConfig = {
   consumerSecret: "PaM9cBZpk9MC2NEFXQChRmMvS21mebZUMMpRZYdVxUVmrApdkEwvXImJVV8vhxcG",
   shortcode: "174379",
   passkey: "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",
-  callbackURL: "https://webhook.site/1ce723ac-ef61-4f40-95ef-33f7f5c0c28f" // This must be a publicly accessible URL for your backend
+  callbackURL: "https://webhook.site/#!/view/75cb3e81-404b-4c4d-bd45-ae386b91333e" // This must be a publicly accessible URL for your backend
 };
 
 // --- Test endpoint ---
@@ -136,7 +137,7 @@ app.post('/api/mpesa/stkpush', async (req, res) => {
   try {
     // 1. Get M-Pesa Access Token
     const authResponse = await axios.get(
-      '[https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials](https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials)',
+      'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
       {
         auth: {
           username: mpesaConfig.consumerKey,
@@ -162,7 +163,7 @@ app.post('/api/mpesa/stkpush', async (req, res) => {
       "Password": encodedPassword,
       "Timestamp": timestamp,
       "TransactionType": "CustomerPayBillOnline",
-      "Amount": amount,
+      "Amount": Number(amount),
       "PartyA": phoneNumber,
       "PartyB": mpesaConfig.shortcode,
       "PhoneNumber": phoneNumber,
@@ -178,15 +179,13 @@ app.post('/api/mpesa/stkpush', async (req, res) => {
 
     // 4. Make the STK Push Request to Safaricom
     const stkResponse = await axios.post(
-      "[https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest](https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest)",
+      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
       payload,
       { headers }
     );
 
     console.log("STK Push request sent. M-Pesa response:", stkResponse.data);
 
-    // Removed all payment record update logic as requested.
-    // This endpoint no longer interacts with the database for payment status.
 
     res.status(200).json(stkResponse.data); // Send M-Pesa response to frontend
 

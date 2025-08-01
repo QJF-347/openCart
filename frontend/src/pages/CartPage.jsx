@@ -17,7 +17,7 @@ export default function CartPage() {
   const [phoneNumber, setPhoneNumber] = useState(''); // State for M-Pesa phone number
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
   const tax = subtotal * 0.1;
-  const total = subtotal + tax; // Total amount to be paid
+  const total = subtotal 
 
   const handleQuantityChange = (itemId, newQty) => {
     if (newQty < 1) {
@@ -130,7 +130,7 @@ export default function CartPage() {
       }
 
     } catch (err) {
-      console.error('M-Pesa payment error (frontend):', err);
+      // console.error('M-Pesa payment error (frontend):', err);
       // Display error message from backend if available, otherwise a generic one
       setMpesaError(err.response?.data?.message || err.message || 'Failed to initiate M-Pesa payment. Network error or server issue.');
     } finally {
